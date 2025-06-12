@@ -1,0 +1,1088 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        200
+      ],
+      "id": "763f1184-ba4c-4a99-ba22-b8466e6b1719",
+      "name": "When chat message received",
+      "webhookId": "ff670d76-296b-497d-992c-07c6f3d791ff"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        140,
+        -40
+      ],
+      "id": "295387b4-f64a-4550-b2d2-115b131aa2f3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "documentos",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1540,
+        1060
+      ],
+      "id": "66565c9e-641c-4ed6-8411-d593ca1e6d2b",
+      "name": "Webhook",
+      "webhookId": "638f687d-4884-482c-b0db-d5f5b1431799"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -1320,
+        1060
+      ],
+      "id": "bff7d878-869b-4adc-89f2-43ac40f22bd0",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        1060
+      ],
+      "id": "b2e15623-5711-47cb-b85d-5ad1931722d5",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "documentos",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.2,
+      "position": [
+        -864,
+        1060
+      ],
+      "id": "d3e559ec-74de-4799-94ec-7d9b87dc0dec",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "iHM3NnmQpTLnPjtA",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        1280
+      ],
+      "id": "cf898fa9-9d78-4ec0-b21b-3fca04d266bc",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        1282.5
+      ],
+      "id": "09f76f43-324d-4ecd-a24a-dea22642a012",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        1480
+      ],
+      "id": "380a27f0-580f-4ed3-bb5b-f1634344fba9",
+      "name": "Token Splitter"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.chatInput }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        340,
+        -40
+      ],
+      "id": "12abeb26-5274-4386-b2c6-c57d53be7840",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Información sobre la Pontificia Universidad Javeriana de Cali"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        -40
+      ],
+      "id": "4904982b-ec3a-439e-a459-0391908fc3c8",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "documentos",
+          "mode": "list",
+          "cachedResultName": "documentos"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.2,
+      "position": [
+        360,
+        160
+      ],
+      "id": "b176da94-103f-47ea-b992-ed7e84a7e57f",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "iHM3NnmQpTLnPjtA",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        640,
+        160
+      ],
+      "id": "fe6a046f-2747-485a-92f0-11fd658d993c",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        440,
+        360
+      ],
+      "id": "4b1aefab-d669-4514-8382-f3bc52dee917",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        380
+      ],
+      "id": "1952df10-f207-470e-aa5a-da601cdf7efd",
+      "name": "Google Gemini Chat Model3",
+      "notesInFlow": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a98f2d3d-dff2-4878-a132-a5d83ee8fa5c",
+              "leftValue": "={{ $json.output.properties.intencion.type }}",
+              "rightValue": "pregunta_frecuente",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        200
+      ],
+      "id": "7fa3002d-2bf1-4072-a8e7-a39de4d05f7e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza el siguiente mensaje y responde solamente con JSON como este:\n\n{\n  \"intencion\": \"pregunta_frecuente\" | \"interesado_en_programa\" | \"proveer_datos\" | \"queja\" | \"otros\",\n  \"emocion\": \"neutro\" | \"emocionado\" | \"molesto\" | \"confundido\",\n  \"motivo\": \"resumen breve del mensaje\"\n}\n\nMensaje: {{ $json.chatInput }}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        200
+      ],
+      "id": "c94f3e29-40a4-4f0e-9188-d7b9b240d1bc",
+      "name": "Determina intención"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        260,
+        -260
+      ],
+      "id": "0ecc469b-8d30-4344-9435-3aa70052dc03",
+      "name": "Preguntas frecuentes"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "70685791-4f26-471c-a012-c50ef13cc2a7",
+              "leftValue": "={{ $json.output.properties.intencion.type }}",
+              "rightValue": "interesado_en_programa",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "d5a1a875-217d-4885-b129-613181898a47",
+              "leftValue": "={{ $json.output.properties.intencion.type }}",
+              "rightValue": "proveer_datos",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -300,
+        620
+      ],
+      "id": "ec81e1d3-c70e-4b8a-977c-124e252e1677",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"intencion\": { \"type\": \"string\" },\n    \"emocion\": { \"type\": \"string\" },\n    \"motivo\": { \"type\": \"string\" }\n  },\n  \"required\": [\"intencion\", \"emocion\", \"motivo\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -440,
+        440
+      ],
+      "id": "538df9b7-8c09-4a78-bfa5-cf0425f11012",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        20,
+        1060
+      ],
+      "id": "a11d9f10-e691-419f-9c2f-d2a81ea0b6a8",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "70685791-4f26-471c-a012-c50ef13cc2a7",
+              "leftValue": "={{ $json.output.properties.intencion.type }}",
+              "rightValue": "otros",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -260,
+        880
+      ],
+      "id": "c73e6894-0f29-4adf-abf2-e55ce22a7666",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=El usuario te escribio el siguiente mensaje\nMensaje: {{ $json.chatInput }}\nRespondele amablemente y siempre teniendo en cuenta que eres un Asistente virtual de la Universidad Javeriana Cali",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        40,
+        860
+      ],
+      "id": "f9f7e216-cc13-4aab-967a-2a9ed727ba09",
+      "name": "Otros"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        140,
+        1080
+      ],
+      "id": "f3b4b2af-3d3a-4fca-b194-f1982c25d13b",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "36cc5528-bc67-4882-8715-9c04e229a029",
+      "name": "Confirmacion Usuario",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        720
+      ],
+      "id": "7f9ce86e-651a-4515-9ebf-e42db8f225eb",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        760
+      ],
+      "id": "6a7210c1-a194-4939-9a58-7e2062943fef",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Estás conversando directamente con un posible estudiante de la Universidad Javeriana Cali.\n\nEl siguiente mensaje fue escrito por un usuario interesado en un programa académico.\n\nExtrae los siguientes datos si están presentes, y responde ÚNICAMENTE con un bloque JSON plano como este:\n\n{\n  \"nombre\": \"Juan Pérez\",\n  \"correo\": \"juanperez@example.com\",\n  \"celular\": \"3101234567\",\n  \"programa\": \"ingeniería de sistemas\"\n}\n\nNo uses markdown (```), ni digas \"Aquí está tu JSON\", ni uses formato de código.  \nSolo devuelve el JSON sin ninguna explicación.\n\nSi un dato no se encuentra, deja el valor como `null`.\n\nRevisa la memoria para que obtengas el programa academico previamente mencionado en el chat.\n\nMensaje del usuario: {{ $('When chat message received').item.json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        0,
+        540
+      ],
+      "id": "3fc6e3a8-f195-466d-926e-b00be0ba0230",
+      "name": "Extraer Datos Usuario"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Gracias por compartir tu interés. Para completar tu registro y poder enviarte la información sobre el programa que te interesa, aún necesito los siguientes datos:\n\n{{ $('Code').item.json.nombre === null ? \"- Tu nombre completo\\n\" : \"\" }}\n{{ $('Code').item.json.correo === null ? \"- Tu correo electrónico\\n\" : \"\" }}\n{{ $('Code').item.json.celular === null ? \"- Tu número de celular\\n\" : \"\" }}\n\nCuando tengas un momento, por favor envíamelos todos juntos en un solo mensaje. ¡Gracias!\nSolicitale al usuario que te envie los datos que no existan.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        520
+      ],
+      "id": "f7a0af0e-ff67-402e-8aa4-63d2f8a13bed",
+      "name": "Repreguntar Faltantes"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        720
+      ],
+      "id": "58bf5447-633f-4d1e-907e-df6374ba9f93",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1220,
+        760
+      ],
+      "id": "8d197c4e-acaa-4bae-9f58-8115d507be2c",
+      "name": "Simple Memory4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a98f2d3d-dff2-4878-a132-a5d83ee8fa5c",
+              "leftValue": "={{ $json.nombre }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "bebc9685-6d41-4ed5-84bb-f7c12ff96684",
+              "leftValue": "={{ $json.correo }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "eb5ebc0f-dd04-49b1-bf2b-844eb107f64c",
+              "leftValue": "={{ $json.celular }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        560
+      ],
+      "id": "575085f8-d558-4290-808b-45579f8d9a15",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err.message);\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        540
+      ],
+      "id": "f074d204-6732-421d-881d-ba60991530f6",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1SlOs2zw9J2AR-QC_lNNgWEQEsYk2oWv7ayEAhC75T7Q",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Hoja 1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "correo": "={{ $json.correo}}",
+            "celular": "={{ $json.celular}}",
+            "programa": "={{ $json.programa}}",
+            "nombre": "={{ $json.nombre }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "correo",
+              "displayName": "correo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "celular",
+              "displayName": "celular",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "programa",
+              "displayName": "programa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        940,
+        1120
+      ],
+      "id": "74262e1d-9f30-41d0-8368-bb49db8decec",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "osYV9syxcHu7Ivng",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Preguntas frecuentes",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Preguntas frecuentes",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "Preguntas frecuentes",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Preguntas frecuentes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Determina intención": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Extraer Datos Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Otros",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Otros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Otros",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extraer Datos Usuario",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos Usuario": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Repreguntar Faltantes",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "Extraer Datos Usuario",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "Repreguntar Faltantes",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Repreguntar Faltantes": {
+      "main": [
+        []
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Repreguntar Faltantes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Confirmacion Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmacion Usuario": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bb8168b8-b648-4be2-8650-b079adb4574c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4dc26936bc06a9a9b13517b72cdb59baa291c3cd7d40c8fe2614403cd7e27ae"
+  },
+  "id": "LYrJn04Uf0gb3unv",
+  "tags": []
+}
