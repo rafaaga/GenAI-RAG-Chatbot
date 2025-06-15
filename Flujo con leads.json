@@ -269,7 +269,7 @@
           "conditions": [
             {
               "id": "a98f2d3d-dff2-4878-a132-a5d83ee8fa5c",
-              "leftValue": "={{ $json.output.intencion }}",
+              "leftValue": "={{ $json.intencion }}",
               "rightValue": "pregunta_frecuente",
               "operator": {
                 "type": "string",
@@ -285,8 +285,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -240,
-        200
+        -20,
+        180
       ],
       "id": "7fa3002d-2bf1-4072-a8e7-a39de4d05f7e",
       "name": "If"
@@ -294,7 +294,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Eres un asistente virtual de la Universidad Javeriana Cali.\n\nA continuación se te proporcionará un mensaje escrito por un usuario. Tu tarea es identificar con precisión:\n\n1. La intención del mensaje (lo que el usuario desea).\n2. La emoción general del usuario.\n3. Un resumen breve del motivo del mensaje.\n\nResponde exclusivamente en formato JSON **válido y plano**, como el siguiente ejemplo:\n\n{\n  \"intencion\": \"pregunta_frecuente\" | \"interesado_en_programa\" | \"proveer_datos\" | \"queja\" | \"otros\",\n  \"emocion\": \"neutro\" | \"emocionado\" | \"molesto\" | \"confundido\",\n  \"motivo\": \"resumen breve del mensaje\"\n}\n\nUsa uno de los siguientes valores para el campo `intencion`:\n\n- `\"pregunta_frecuente\"` → si el usuario **pide información o hace una consulta genérica** (ej. \"¿cuánto cuesta?\", \"¿cuándo inician clases?\", \"quiero información de un programa\").\n- `\"interesado_en_programa\"` → si el usuario **manifiesta explícitamente su deseo de estudiar o inscribirse** (ej. \"quiero inscribirme\", \"me gustaría estudiar\", \"quiero matricularme\").\n- `\"proveer_datos\"` → si el usuario **proporciona su nombre, correo o celular**.\n- `\"queja\"` → si el usuario **expresa molestia, inconformidad o critica algo**.\n- `\"otros\"` → si el mensaje **no encaja en ninguna de las anteriores**.\n\nPara `emocion`, selecciona uno de estos:\n\n- `\"neutro\"` – tono normal, sin carga emocional notable.\n- `\"emocionado\"` – el usuario muestra entusiasmo o motivación.\n- `\"molesto\"` – hay señales de enojo, frustración o crítica.\n- `\"confundido\"` – el usuario expresa duda o desorientación.\n\nSi no puedes determinar algo con certeza, **haz tu mejor inferencia sin dejar valores nulos**.\n\n---\n\n**Mensaje del usuario:**\n{{ $json.chatInput }}\n",
+        "text": "=Eres un asistente virtual de la Universidad Javeriana Cali.\n\nA continuación se te proporcionará un mensaje escrito por un usuario. Tu tarea es identificar con precisión:\n\n1. La intención del mensaje (lo que el usuario desea).\n2. La emoción general del usuario.\n3. Un resumen breve del motivo del mensaje.\n\nResponde exclusivamente en formato JSON **válido y plano** no incluyas elementos prohibidos en la respuesta como \"```\", \"json\" y \"\\n\", como el siguiente ejemplo:\n\n{\n  \"intencion\": \"pregunta_frecuente\" | \"interesado_en_programa\" | \"queja\" | \"otros\",\n  \"emocion\": \"neutro\" | \"emocionado\" | \"molesto\" | \"confundido\",\n  \"motivo\": \"resumen breve del mensaje\"\n}\n\nUsa uno de los siguientes valores para el campo `intencion`:\n\n- `\"pregunta_frecuente\"` → si el usuario **pide información o hace una consulta genérica** (ej. \"¿cuánto cuesta?\", \"¿cuándo inician clases?\", \"quiero información de un programa\").\n- `\"interesado_en_programa\"` → si el usuario **manifiesta explícitamente su deseo de estudiar o inscribirse** (ej. \"quiero inscribirme\", \"me gustaría estudiar\", \"quiero matricularme\").\n- `\"queja\"` → si el usuario **expresa molestia, inconformidad o critica algo**.\n- `\"otros\"` → si el mensaje **no encaja en ninguna de las anteriores**.\n\nPara `emocion`, selecciona uno de estos:\n\n- `\"neutro\"` – tono normal, sin carga emocional notable.\n- `\"emocionado\"` – el usuario muestra entusiasmo o motivación.\n- `\"molesto\"` – hay señales de enojo, frustración o crítica.\n- `\"confundido\"` – el usuario expresa duda o desorientación.\n\nSi no puedes determinar algo con certeza, **haz tu mejor inferencia sin dejar valores nulos**.\n\n---\n\nDebes tener en cuenta que cuando el usuario proporcione datos debes revisar la memoria del chat para identificar que tipo de flujo resultante, ejemplo: si el usuario esta molesto y provee sus datos es una queja, pero si previamente estaba interesado en un programa y provee sus datos, esta interasado en un programa.\n\n**Mensaje del usuario:**\n{{ $json.chatInput }}\n",
         "hasOutputParser": true,
         "options": {}
       },
@@ -334,18 +334,8 @@
           "conditions": [
             {
               "id": "70685791-4f26-471c-a012-c50ef13cc2a7",
-              "leftValue": "={{ $json.output.intencion }}",
+              "leftValue": "={{ $json.intencion }}",
               "rightValue": "interesado_en_programa",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            },
-            {
-              "id": "d5a1a875-217d-4885-b129-613181898a47",
-              "leftValue": "={{ $json.output.intencion }}",
-              "rightValue": "proveer_datos",
               "operator": {
                 "type": "string",
                 "operation": "equals",
@@ -387,8 +377,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        20,
-        1060
+        960,
+        1840
       ],
       "id": "a11d9f10-e691-419f-9c2f-d2a81ea0b6a8",
       "name": "Google Gemini Chat Model4",
@@ -411,8 +401,8 @@
           "conditions": [
             {
               "id": "70685791-4f26-471c-a012-c50ef13cc2a7",
-              "leftValue": "={{ $json.output.intencion }}",
-              "rightValue": "otros",
+              "leftValue": "={{ $json.intencion }}",
+              "rightValue": "queja",
               "operator": {
                 "type": "string",
                 "operation": "equals",
@@ -428,7 +418,7 @@
       "typeVersion": 2.2,
       "position": [
         -260,
-        880
+        1000
       ],
       "id": "c73e6894-0f29-4adf-abf2-e55ce22a7666",
       "name": "If2"
@@ -436,14 +426,14 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=El usuario te escribio el siguiente mensaje\nMensaje: {{ $json.chatInput }}\nRespondele amablemente y siempre teniendo en cuenta que eres un Asistente virtual de la Universidad Javeriana Cali",
+        "text": "=El usuario te escribio el siguiente mensaje\nMensaje: {{ $('When chat message received').item.json.chatInput }}\nRespondele amablemente y siempre teniendo en cuenta que eres un Asistente virtual de la Universidad Javeriana Cali\nNo respondas ningun JSON, tus respuestas pueden ser creativas pero sin llegar a responder con algo tecnico como un JSON, recuerda que estas tratando con usuarios reales.",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        40,
-        860
+        980,
+        1600
       ],
       "id": "f9f7e216-cc13-4aab-967a-2a9ed727ba09",
       "name": "Otros"
@@ -456,8 +446,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        140,
-        1080
+        1100,
+        1840
       ],
       "id": "f3b4b2af-3d3a-4fca-b194-f1982c25d13b",
       "name": "Simple Memory2"
@@ -471,8 +461,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        640,
-        1120
+        1720,
+        760
       ]
     },
     {
@@ -483,8 +473,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -40,
-        720
+        960,
+        640
       ],
       "id": "7f9ce86e-651a-4515-9ebf-e42db8f225eb",
       "name": "Google Gemini Chat Model5",
@@ -503,8 +493,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        1100,
-        760
+        2160,
+        680
       ],
       "id": "6a7210c1-a194-4939-9a58-7e2062943fef",
       "name": "Google Gemini Chat Model6",
@@ -525,8 +515,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        0,
-        540
+        1060,
+        460
       ],
       "id": "3fc6e3a8-f195-466d-926e-b00be0ba0230",
       "name": "Extraer Datos Usuario"
@@ -534,14 +524,14 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Gracias por compartir tu interés. Para completar tu registro y poder enviarte la información sobre el programa que te interesa, aún necesito los siguientes datos:\n\n{{ $json.nombre?.[0] == null ? \"- Tu nombre completo\\n\" : \"\" }}\n{{ $json.correo?.[0] == null ? \"- Tu correo electrónico\\n\" : \"\" }}\n{{ $json.celular?.[0] == null ? \"- Tu número de celular\\n\" : \"\" }}\n\nCuando tengas un momento, por favor envíamelos todos juntos en un solo mensaje. ¡Gracias!\nSolicitale al usuario que te envie los datos que no existan.",
+        "text": "=Gracias por compartir tu interés. Para completar tu registro y poder enviarte la información sobre el programa que te interesa, aún necesito los siguientes datos:\n\n{{ $json.nombre?.[0] == null ? \"- Tu nombre completo\\n\" : \"\" }}\n{{ $json.correo?.[0] == null ? \"- Tu correo electrónico\\n\" : \"\" }}\n{{ $json.celular?.[0] == null ? \"- Tu número de celular\\n\" : \"\" }}\n\nCuando tengas un momento, por favor envíamelos todos juntos en un solo mensaje. ¡Gracias!\nSolicitale al usuario que te envie los datos que no existan.\nNo respondas con JSON, siempre respondele al usuario informando los datos faltantes.",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        1140,
-        520
+        2200,
+        440
       ],
       "id": "f7a0af0e-ff67-402e-8aa4-63d2f8a13bed",
       "name": "Repreguntar Faltantes"
@@ -554,8 +544,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        1220,
-        760
+        2300,
+        660
       ],
       "id": "8d197c4e-acaa-4bae-9f58-8115d507be2c",
       "name": "Simple Memory4"
@@ -608,108 +598,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        800,
-        560
+        1860,
+        480
       ],
       "id": "575085f8-d558-4290-808b-45579f8d9a15",
       "name": "If3"
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "1SlOs2zw9J2AR-QC_lNNgWEQEsYk2oWv7ayEAhC75T7Q",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "Hoja 1",
-          "mode": "name"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "correo": "={{ $json.correo}}",
-            "celular": "={{ $json.celular}}",
-            "programa": "={{ $json.programa}}",
-            "nombre": "={{ $json.nombre }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "nombre",
-              "displayName": "nombre",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "correo",
-              "displayName": "correo",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "celular",
-              "displayName": "celular",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "programa",
-              "displayName": "programa",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.6,
-      "position": [
-        940,
-        1120
-      ],
-      "id": "74262e1d-9f30-41d0-8368-bb49db8decec",
-      "name": "Google Sheets",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "osYV9syxcHu7Ivng",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsonSchemaExample": "{\n\t\"intencion\": \"La intención de su mensaje, ejemplo: pregunta_frecuente o interesado_en_programa\",\n\t\"emocion\": \"Las emociones que siente el usuario\",\n    \"motivo\": \"El motivo de su mensaje\"\n}"
-      },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
-      "typeVersion": 1.2,
-      "position": [
-        -460,
-        420
-      ],
-      "id": "7f2a515d-d1b6-49c9-b49a-74b435f24810",
-      "name": "Structured Output Parser1"
     },
     {
       "parameters": {
@@ -720,24 +613,294 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        80,
-        720
+        1140,
+        640
       ],
       "id": "58bf5447-633f-4d1e-907e-df6374ba9f93",
       "name": "Simple Memory3"
     },
     {
       "parameters": {
-        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err.message);\n}\n"
+        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err);\n}\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        440,
-        580
+        1500,
+        500
       ],
       "id": "f074d204-6732-421d-881d-ba60991530f6",
       "name": "Code"
+    },
+    {
+      "parameters": {
+        "company": "Javeriana Cali",
+        "lastname": "={{ $json.nombre }}",
+        "additionalFields": {
+          "customFieldsUi": {
+            "customFieldsValues": [
+              {
+                "fieldId": "hed__Area_Of_Interest__c",
+                "value": "={{ $json.programa}}"
+              }
+            ]
+          },
+          "email": "={{ $json.correo}}",
+          "firstname": "={{ $json.nombre }}",
+          "phone": "={{ $json.celular}}"
+        }
+      },
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        960
+      ],
+      "id": "9382002a-f702-4bb7-b71b-278d51081bc9",
+      "name": "Salesforce",
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "TsvRcYSF11GLfmto",
+          "name": "Salesforce account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e2ab810d-2722-4565-9b92-5d45526b279c",
+      "name": "Confirmacion Usuario1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        780,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        140,
+        980
+      ],
+      "id": "99242463-d916-4f98-a34e-ea11ef9a5362",
+      "name": "Google Gemini Chat Model7",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        980,
+        980
+      ],
+      "id": "b57738cf-d012-4e0d-ac2d-cae79bf0f4ec",
+      "name": "Google Gemini Chat Model8",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=El usuario esta presentando una actitud negativa y desea realizar una queja, solicitale los siguientes datos:\n\n{{ $json.nombre?.[0] == null ? \"- Tu nombre completo\\n\" : \"\" }}\n{{ $json.correo?.[0] == null ? \"- Tu correo electrónico\\n\" : \"\" }}\n{{ $json.celular?.[0] == null ? \"- Tu número de celular\\n\" : \"\" }}\n{{ $json.descripcion?.[0] == null ? \"- La descripción del problema\\n\" : \"\" }}\n\nRespondele muy amablemente solicitandole los datos para ser contactado.\nSolicitale al usuario que te envie los datos que no existan.\nNo respondas con JSON, siempre respondele al usuario informando los datos faltantes.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        780
+      ],
+      "id": "4c81bbf9-b64d-41eb-94d9-4ab8dca84856",
+      "name": "Repreguntar Faltantes1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1100,
+        980
+      ],
+      "id": "6f5b68de-4468-4a0e-a007-f00e988f898c",
+      "name": "Simple Memory5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a98f2d3d-dff2-4878-a132-a5d83ee8fa5c",
+              "leftValue": "={{ $json.nombre }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "bebc9685-6d41-4ed5-84bb-f7c12ff96684",
+              "leftValue": "={{ $json.correo }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "eb5ebc0f-dd04-49b1-bf2b-844eb107f64c",
+              "leftValue": "={{ $json.celular }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        800
+      ],
+      "id": "5249b774-23ac-44c9-a1ce-8affa63ef95f",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        260,
+        980
+      ],
+      "id": "18a3b934-111f-46f7-a48c-3145410ba78d",
+      "name": "Simple Memory6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err);\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        820
+      ],
+      "id": "b6371fd2-1411-49cd-a225-ccde986dc72a",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Estás conversando directamente con un usuario de  la Universidad Javeriana Cali.\n\nEl siguiente mensaje fue escrito por un usuario con una queja o molestia relacionada a la Universidad Javeriana Cali.\n\nExtrae los siguientes datos si están presentes, y responde ÚNICAMENTE con un bloque JSON plano como este:\n\n{\n  \"nombre\": \"Juan Pérez\",\n  \"correo\": \"juanperez@example.com\",\n  \"celular\": \"3101234567\",\n  \"descripcion\": \"Tengo un problema con el proceso de matricula\"\n}\n\nNo uses markdown (```), ni digas \"Aquí está tu JSON\", ni uses formato de código.  \nSolo devuelve el JSON sin ninguna explicación.\n\nSi un dato no se encuentra, deja el valor como null.\n\nRevisa la memoria del chat para completar los datos faltantes en caso de que se hayan mencionado en el chat, es importante que la descripcion sea la que el usuario ha proporcionado anteriormente en el chat y lo mismo con demas datos, deben ser exactamente los proporcionados.\n\nMensaje del usuario: {{ $('When chat message received').item.json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        180,
+        800
+      ],
+      "id": "053a64e1-b2a7-48cc-8a62-3b2e42338713",
+      "name": "Extraer Datos Quejas"
+    },
+    {
+      "parameters": {
+        "resource": "case",
+        "type": "Otro",
+        "additionalFields": {
+          "description": "={{ $json.descripcion }}",
+          "reason": "Quejas",
+          "recordTypeId": "0123g000000bpIoAAI",
+          "subject": "={{ $json.descripcion }}",
+          "suppliedEmail": "={{ $json.correo }}",
+          "suppliedName": "={{ $json.nombre }}",
+          "suppliedPhone": "={{ $json.celular }}"
+        }
+      },
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        760,
+        1240
+      ],
+      "id": "b3f33261-ebf2-45d2-b53d-c940bda38db6",
+      "name": "PQRs",
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "TsvRcYSF11GLfmto",
+          "name": "Salesforce account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -540,
+        420
+      ],
+      "id": "a0bc6950-1f46-40ef-94c9-d28234b72289",
+      "name": "Simple Memory7"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err);\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        180
+      ],
+      "id": "f5198ce6-7b1c-497b-8156-822db5ee8fa6",
+      "name": "Code2"
     }
   ],
   "pinData": {},
@@ -918,7 +1081,7 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Code2",
             "type": "main",
             "index": 0
           }
@@ -961,6 +1124,13 @@
     },
     "If2": {
       "main": [
+        [
+          {
+            "node": "Extraer Datos Quejas",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Otros",
@@ -1052,19 +1222,8 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
+            "node": "Salesforce",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Structured Output Parser1": {
-      "ai_outputParser": [
-        [
-          {
-            "node": "Determina intención",
-            "type": "ai_outputParser",
             "index": 0
           }
         ]
@@ -1091,13 +1250,152 @@
           }
         ]
       ]
+    },
+    "Salesforce": {
+      "main": [
+        [
+          {
+            "node": "Otros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmacion Usuario1": {
+      "main": [
+        [
+          {
+            "node": "PQRs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extraer Datos Quejas",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Repreguntar Faltantes1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory5": {
+      "ai_memory": [
+        [
+          {
+            "node": "Repreguntar Faltantes1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Repreguntar Faltantes1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Confirmacion Usuario1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory6": {
+      "ai_memory": [
+        [
+          {
+            "node": "Extraer Datos Quejas",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos Quejas": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PQRs": {
+      "main": [
+        [
+          {
+            "node": "Otros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory7": {
+      "ai_memory": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "946ea001-bfdf-4ff3-ba14-25d5fcb9c422",
+  "versionId": "9da8969a-d31f-4ed8-bb2a-7ffc9cc33994",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a4dc26936bc06a9a9b13517b72cdb59baa291c3cd7d40c8fe2614403cd7e27ae"
