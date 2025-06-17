@@ -4,7 +4,7 @@ from docx import Document
 import PyPDF2
 from bs4 import BeautifulSoup
 
-n8n_webhook_url = "http://localhost:5678/webhook-test/documentos"
+n8n_webhook_url = "http://localhost:5678/webhook/documentos"
 
 def extract_text_from_docx(file_path):
     doc = Document(file_path)
