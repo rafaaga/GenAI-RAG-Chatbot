@@ -1,0 +1,1340 @@
+{
+  "name": "Agente inteligente",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1540,
+        760
+      ],
+      "id": "763f1184-ba4c-4a99-ba22-b8466e6b1719",
+      "name": "When chat message received",
+      "webhookId": "ff670d76-296b-497d-992c-07c6f3d791ff"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        92,
+        -220
+      ],
+      "id": "295387b4-f64a-4550-b2d2-115b131aa2f3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "=Mensaje: {{ $json.textoLimpio }}, relacionado a la Pontificia Universidad Javeriana Cali"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        212,
+        -217.5
+      ],
+      "id": "4904982b-ec3a-439e-a459-0391908fc3c8",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "informacion",
+          "mode": "list",
+          "cachedResultName": "informacion"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.2,
+      "position": [
+        108,
+        -17.5
+      ],
+      "id": "b176da94-103f-47ea-b992-ed7e84a7e57f",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "iHM3NnmQpTLnPjtA",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        404,
+        -20
+      ],
+      "id": "fe6a046f-2747-485a-92f0-11fd658d993c",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        196,
+        180
+      ],
+      "id": "4b1aefab-d669-4514-8382-f3bc52dee917",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1292,
+        880
+      ],
+      "id": "1952df10-f207-470e-aa5a-da601cdf7efd",
+      "name": "Google Gemini Chat Model3",
+      "notesInFlow": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente virtual de la Universidad Javeriana Cali.\n\nA continuación se te proporcionará un mensaje escrito por un usuario. Tu tarea es identificar con precisión:\n\n1. La intención del mensaje (lo que el usuario desea).\n2. La emoción general del usuario.\n3. Un resumen breve del motivo del mensaje.\n\nResponde exclusivamente en formato JSON **válido y plano** no incluyas elementos prohibidos en la respuesta como \"```\", \"json\" y \"\\n\", como el siguiente ejemplo:\n\n{\n  \"intencion\": \"pregunta_frecuente\" | \"interesado_en_programa\" | \"queja\" | \"otros\",\n  \"emocion\": \"neutro\" | \"emocionado\" | \"molesto\" | \"confundido\",\n  \"motivo\": \"resumen breve del mensaje\"\n}\n\nUsa uno de los siguientes valores para el campo `intencion`:\n\n- `\"pregunta_frecuente\"` → si el usuario **pide información o hace una consulta genérica** (ej. \"¿cuánto cuesta?\", \"¿cuándo inician clases?\", \"quiero información de un programa\").\n- `\"interesado_en_programa\"` → si el usuario **manifiesta explícitamente su deseo de estudiar o inscribirse** (ej. \"quiero inscribirme\", \"me gustaría estudiar\", \"quiero matricularme\").\n- `\"queja\"` → si el usuario **expresa molestia, inconformidad o critica algo**.\n- `\"otros\"` → si el mensaje **no encaja en ninguna de las anteriores**.\n\nPara `emocion`, selecciona uno de estos:\n\n- `\"neutro\"` – tono normal, sin carga emocional notable.\n- `\"emocionado\"` – el usuario muestra entusiasmo o motivación.\n- `\"molesto\"` – hay señales de enojo, frustración o crítica.\n- `\"confundido\"` – el usuario expresa duda o desorientación.\n\nSi no puedes determinar algo con certeza, **haz tu mejor inferencia sin dejar valores nulos**.\n\n---\n\nDebes tener en cuenta que cuando el usuario proporcione datos debes revisar la memoria del chat para identificar que tipo de flujo resultante, ejemplo: si el usuario esta molesto y provee sus datos es una queja, pero si previamente estaba interesado en un programa y provee sus datos, esta interasado en un programa.\n\n**Mensaje del usuario:**\n{{ $json.body.message }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -1320,
+        660
+      ],
+      "id": "c94f3e29-40a4-4f0e-9188-d7b9b240d1bc",
+      "name": "Determina intención"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente virtual de la Universidad Javeriana Cali.\nRecibirás una pregunta en lenguaje natural.\nSi tienes acceso a herramientas o funciones externas, utiliza solo una vez la necesaria para obtener una respuesta clara.\nUna vez obtengas una respuesta útil y coherente, devuélvela directamente. No vuelvas a llamar herramientas.\nSi ya tienes suficiente información, no repitas la consulta ni revalides la respuesta.\nSi no puedes responder con seguridad, indica cortésmente que no tienes la información.\n\nMensaje del usuario:\n{{ $json.textoLimpio }}",
+        "options": {
+          "maxIterations": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        108,
+        -440
+      ],
+      "id": "0ecc469b-8d30-4344-9435-3aa70052dc03",
+      "name": "Preguntas frecuentes"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1228,
+        1305
+      ],
+      "id": "a11d9f10-e691-419f-9c2f-d2a81ea0b6a8",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Si el usuario manifiesta que requiere asistencia de un agente real, responde unicamente el mensaje sin agregar mas texto, ni nada:\ntransferencia_agente\n\nSi el usuario ya no necesita de tu asistencia, responde unicamente el mensaje sin agregar mas texto, ni nada:\nfinalizar_chat\n\nSi el usuario no necesita mas asistencia, responde unicamente el mensaje:\nfinalizar_chat\n\nEl usuario te escribio el siguiente mensaje\nMensaje: {{ $('Webhook1').item.json.body.message }}\nRespondele amablemente y siempre teniendo en cuenta que eres un Asistente virtual de la Universidad Javeriana Cali\nNo respondas ningun JSON, tus respuestas pueden ser creativas pero sin llegar a responder con algo tecnico como un JSON, recuerda que estas tratando con usuarios reales.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        1085
+      ],
+      "id": "f9f7e216-cc13-4aab-967a-2a9ed727ba09",
+      "name": "Otros"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook1').item.json.body.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1348,
+        1305
+      ],
+      "id": "f3b4b2af-3d3a-4fca-b194-f1982c25d13b",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "36cc5528-bc67-4882-8715-9c04e229a029",
+      "name": "Confirmacion Usuario",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        682,
+        510
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -476,
+        580
+      ],
+      "id": "7f9ce86e-651a-4515-9ebf-e42db8f225eb",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        632,
+        330
+      ],
+      "id": "6a7210c1-a194-4939-9a58-7e2062943fef",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Estás conversando directamente con un posible estudiante de la Universidad Javeriana Cali.\n\nEl siguiente mensaje fue escrito por un usuario interesado en un programa académico.\n\nExtrae los siguientes datos si están presentes, y responde ÚNICAMENTE con un bloque JSON plano como este:\n\n{\n  \"nombre\": \"Juan Pérez\",\n  \"correo\": \"juanperez@example.com\",\n  \"celular\": \"3101234567\",\n  \"programa\": \"ingeniería de sistemas\"\n}\n\nNo uses markdown (```), ni digas \"Aquí está tu JSON\", ni uses formato de código.  \nSolo devuelve el JSON sin ninguna explicación.\n\nSi un dato no se encuentra, deja el valor como null.\n\nRevisa la memoria para que obtengas el programa academico previamente mencionado en el chat.\n\nMensaje del usuario: {{ $('Webhook1').item.json.body.message }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -504,
+        360
+      ],
+      "id": "3fc6e3a8-f195-466d-926e-b00be0ba0230",
+      "name": "Extraer Datos Usuario"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Gracias por compartir tu interés. Para completar tu registro y poder enviarte la información sobre el programa que te interesa, aún necesito los siguientes datos:\n\n{{ $json.nombre?.[0] == null ? \"- Tu nombre completo\\n\" : \"\" }}\n{{ $json.correo?.[0] == null ? \"- Tu correo electrónico\\n\" : \"\" }}\n{{ $json.celular?.[0] == null ? \"- Tu número de celular\\n\" : \"\" }}\n\nCuando tengas un momento, por favor envíamelos todos juntos en un solo mensaje. ¡Gracias!\nSolicitale al usuario que te envie los datos que no existan.\nNo respondas con JSON, siempre respondele al usuario informando los datos faltantes.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        604,
+        110
+      ],
+      "id": "f7a0af0e-ff67-402e-8aa4-63d2f8a13bed",
+      "name": "Repreguntar Faltantes"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook1').item.json.body.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        752,
+        330
+      ],
+      "id": "8d197c4e-acaa-4bae-9f58-8115d507be2c",
+      "name": "Simple Memory4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a98f2d3d-dff2-4878-a132-a5d83ee8fa5c",
+              "leftValue": "={{ $json.nombre }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "bebc9685-6d41-4ed5-84bb-f7c12ff96684",
+              "leftValue": "={{ $json.correo }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "eb5ebc0f-dd04-49b1-bf2b-844eb107f64c",
+              "leftValue": "={{ $json.celular }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        238,
+        360
+      ],
+      "id": "575085f8-d558-4290-808b-45579f8d9a15",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook1').item.json.body.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -356,
+        580
+      ],
+      "id": "58bf5447-633f-4d1e-907e-df6374ba9f93",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "company": "Javeriana Cali",
+        "lastname": "={{ $json.programa}}",
+        "additionalFields": {
+          "customFieldsUi": {
+            "customFieldsValues": [
+              {
+                "fieldId": "hed__Area_Of_Interest__c",
+                "value": "={{ $json.programa}}"
+              }
+            ]
+          },
+          "email": "={{ $json.correo}}",
+          "firstname": "={{ $json.nombre }}",
+          "phone": "={{ $json.celular}}"
+        }
+      },
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        980,
+        510
+      ],
+      "id": "9382002a-f702-4bb7-b71b-278d51081bc9",
+      "name": "Salesforce",
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "TsvRcYSF11GLfmto",
+          "name": "Salesforce account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e2ab810d-2722-4565-9b92-5d45526b279c",
+      "name": "Confirmacion Usuario1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        682,
+        1110
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -476,
+        1180
+      ],
+      "id": "99242463-d916-4f98-a34e-ea11ef9a5362",
+      "name": "Google Gemini Chat Model7",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        632,
+        930
+      ],
+      "id": "b57738cf-d012-4e0d-ac2d-cae79bf0f4ec",
+      "name": "Google Gemini Chat Model8",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=El usuario esta presentando una actitud negativa y desea realizar una queja, solicitale los siguientes datos:\n\n{{ $json.nombre?.[0] == null ? \"- Tu nombre completo\\n\" : \"\" }}\n{{ $json.correo?.[0] == null ? \"- Tu correo electrónico\\n\" : \"\" }}\n{{ $json.celular?.[0] == null ? \"- Tu número de celular\\n\" : \"\" }}\n{{ $json.descripcion?.[0] == null ? \"- La descripción del problema\\n\" : \"\" }}\n\nRespondele muy amablemente solicitandole los datos para ser contactado.\nSolicitale al usuario que te envie los datos que no existan.\nNo respondas con JSON, siempre respondele al usuario informando los datos faltantes.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        604,
+        710
+      ],
+      "id": "4c81bbf9-b64d-41eb-94d9-4ab8dca84856",
+      "name": "Repreguntar Faltantes1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook1').item.json.body.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        752,
+        930
+      ],
+      "id": "6f5b68de-4468-4a0e-a007-f00e988f898c",
+      "name": "Simple Memory5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a98f2d3d-dff2-4878-a132-a5d83ee8fa5c",
+              "leftValue": "={{ $json.nombre }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "bebc9685-6d41-4ed5-84bb-f7c12ff96684",
+              "leftValue": "={{ $json.correo }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "eb5ebc0f-dd04-49b1-bf2b-844eb107f64c",
+              "leftValue": "={{ $json.celular }}",
+              "rightValue": "=[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        238,
+        960
+      ],
+      "id": "5249b774-23ac-44c9-a1ce-8affa63ef95f",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook1').item.json.body.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -356,
+        1180
+      ],
+      "id": "18a3b934-111f-46f7-a48c-3145410ba78d",
+      "name": "Simple Memory6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un algoritmo de extracción experto.\nSolo extrae información relevante del texto.\nSi no conoces el valor de un atributo que se te pide extraer, puedes omitir el valor del atributo.\nDebes formatear tu salida como un valor JSON que se ajuste a una instancia determinada de \"JSON Schema\".\n\nEstás conversando directamente con un usuario de la Universidad Javeriana Cali.\n\nEl siguiente mensaje fue escrito por un usuario con una queja o molestia relacionada a la Universidad Javeriana Cali.\n\nExtrae los siguientes datos si están presentes, y responde ÚNICAMENTE con un bloque JSON plano como este:\n\n{\n  \"nombre\": \"Juan Pérez\",\n  \"correo\": \"juanperez@example.com\",\n  \"celular\": \"3101234567\",\n  \"descripcion\": \"Tengo un problema con el proceso de matricula\"\n}\n\nNo uses markdown (```), ni digas \"Aquí está tu JSON\", ni uses formato de código.  \nSolo devuelve el JSON sin ninguna explicación.\n\nSi un dato no se encuentra, deja el valor como null.\n\nRevisa la memoria del chat para completar los datos faltantes en caso de que se hayan mencionado en el chat, es importante que la descripcion sea la que el usuario ha proporcionado anteriormente en el chat y lo mismo con demas datos, deben ser exactamente los proporcionados.\nMensaje del usuario: {{ $('Webhook1').item.json.body.message }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -504,
+        960
+      ],
+      "id": "053a64e1-b2a7-48cc-8a62-3b2e42338713",
+      "name": "Extraer Datos Quejas"
+    },
+    {
+      "parameters": {
+        "resource": "case",
+        "type": "Otro",
+        "additionalFields": {
+          "description": "={{ $json.descripcion }}",
+          "reason": "Quejas",
+          "recordTypeId": "0123g000000bpIoAAI",
+          "subject": "={{ $json.descripcion }}",
+          "suppliedEmail": "={{ $json.correo }}",
+          "suppliedName": "={{ $json.nombre }}",
+          "suppliedPhone": "={{ $json.celular }}"
+        }
+      },
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        980,
+        1110
+      ],
+      "id": "b3f33261-ebf2-45d2-b53d-c940bda38db6",
+      "name": "PQRs",
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "TsvRcYSF11GLfmto",
+          "name": "Salesforce account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1172,
+        880
+      ],
+      "id": "a0bc6950-1f46-40ef-94c9-d28234b72289",
+      "name": "Simple Memory7"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c55784dc-1c67-4a4a-a37a-ddca0fbc84ca",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1540,
+        560
+      ],
+      "id": "d2e223c8-7a71-46df-b569-91b1e72edc57",
+      "name": "Webhook1",
+      "webhookId": "c55784dc-1c67-4a4a-a37a-ddca0fbc84ca"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente experto en enriquecer preguntas con su contexto.\n\nTienes acceso a `chatHistory`, que contiene el historial de conversación anterior. Tu tarea es revisar si el mensaje actual es ambiguo, incompleto o depende de algo dicho anteriormente. Si es así, debes completarlo añadiendo el contexto más relevante posible desde los mensajes previos y devolver una nueva versión del mensaje.\n\nSi el mensaje ya contiene todo el contexto necesario, devuélvelo exactamente como está, sin modificarlo.\n\nFormato de salida: **solo el mensaje enriquecido final**, sin explicaciones, sin formato especial, sin comillas, sin notas adicionales.\n\n---\n\nMensaje actual:\n{{ $('Webhook1').item.json.body.message }}\n\nEl contexto puede ser algo específico como una carrera, una materia, un procedimiento de matrícula, o cualquier detalle mencionado anteriormente. Debes identificar claramente ese tema al enriquecer el mensaje.\n\nNo respondas con frases como \"el tema que estamos tratando\" ni con preguntas de seguimiento.  \nSi el mensaje ya menciona el tema (por ejemplo, “plan de estudios de ingeniería”), no lo modifiques.\n\nTu salida debe ser únicamente el mensaje final, listo para ser usado por otro sistema de respuesta.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -504,
+        -240
+      ],
+      "id": "436ca663-f553-45b4-b8a6-da0490291d9b",
+      "name": "Contextualizador"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -476,
+        -20
+      ],
+      "id": "5a078183-c26f-40df-a326-294c7c6a0dc2",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QceDxK3CYze6Raxh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook1').item.json.body.sessionId }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -356,
+        -20
+      ],
+      "id": "f55656bd-6e95-4c8f-b060-7cebccedbf3c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().map(item => {\n  const original = item.json.output;\n  const limpio = original.replace(/\\s+$/, ''); // Elimina solo espacios/saltos al final\n\n  return {\n    json: {\n      output: limpio\n    }\n  };\n});\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1576,
+        1085
+      ],
+      "id": "f552b34c-0e23-4477-87df-2da9938be902",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err);\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -944,
+        660
+      ],
+      "id": "f5198ce6-7b1c-497b-8156-822db5ee8fa6",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "let raw = $input.first().json.output || '';\n\n// Elimina delimitadores markdown como ```json y ```\nraw = raw\n  .replace(/```json/i, '')\n  .replace(/```/, '')\n  .trim();\n\n// Elimina posibles etiquetas al inicio (como \"AI:\" o \"json:\")\nraw = raw.replace(/^(AI|json):?/i, '').trim();\n\n// Normaliza comillas si viene mal formateado (opcional)\n// raw = raw.replace(/[“”]/g, '\"');\n\n// Limpia líneas vacías\nraw = raw.split('\\n').filter(line => line.trim() !== '').join('\\n');\n\nreturn [{\n  json: {\n    textoLimpio: raw\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -140
+      ],
+      "id": "64d2f40a-7e6a-4b43-acc5-abfd695b17d4",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err);\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        360
+      ],
+      "id": "f074d204-6732-421d-881d-ba60991530f6",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Captura la cadena sucia\nlet raw = $input.first().json.output;\n\n// Limpieza: eliminar ```json, ```, saltos de línea innecesarios\nraw = raw.replace(/```json\\n?/, '')\n         .replace(/```/, '')\n         .trim();\n\ntry {\n  const parsed = JSON.parse(raw);\n  return parsed;\n} catch (err) {\n  // En caso de error, lanza para debug o manejarlo\n  throw new Error(\"Error al hacer parse del JSON limpio: \" + err);\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        960
+      ],
+      "id": "b6371fd2-1411-49cd-a225-ccde986dc72a",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.intencion }}",
+                    "rightValue": "pregunta_frecuente",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8159cfce-e081-4bca-8427-83afe5a62c28"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1008c2fd-7e2f-4af0-bca7-40f7c9a76886",
+                    "leftValue": "={{ $json.intencion }}",
+                    "rightValue": "interesado_en_programa",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b6b26eee-8f77-467b-af5c-bca3a81af221",
+                    "leftValue": "={{ $json.intencion }}",
+                    "rightValue": "queja",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2296b4e7-5b16-4295-ace1-29bf2a0f8dd5",
+                    "leftValue": "={{ $json.intencion }}",
+                    "rightValue": "otros",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -724,
+        639
+      ],
+      "id": "f1d27961-7ab2-471c-a992-5fb0f623c0a2",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Preguntas frecuentes",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "Preguntas frecuentes",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Determina intención": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Otros",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Otros",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extraer Datos Usuario",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos Usuario": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Repreguntar Faltantes",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "Repreguntar Faltantes",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Repreguntar Faltantes": {
+      "main": [
+        []
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Repreguntar Faltantes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Confirmacion Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmacion Usuario": {
+      "main": [
+        [
+          {
+            "node": "Salesforce",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "Extraer Datos Usuario",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salesforce": {
+      "main": [
+        [
+          {
+            "node": "Otros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmacion Usuario1": {
+      "main": [
+        [
+          {
+            "node": "PQRs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extraer Datos Quejas",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Repreguntar Faltantes1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory5": {
+      "ai_memory": [
+        [
+          {
+            "node": "Repreguntar Faltantes1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Repreguntar Faltantes1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Confirmacion Usuario1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory6": {
+      "ai_memory": [
+        [
+          {
+            "node": "Extraer Datos Quejas",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos Quejas": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PQRs": {
+      "main": [
+        [
+          {
+            "node": "Otros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory7": {
+      "ai_memory": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Determina intención",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preguntas frecuentes": {
+      "main": [
+        []
+      ]
+    },
+    "Contextualizador": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Contextualizador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Contextualizador",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Otros": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        []
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Preguntas frecuentes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Contextualizador",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extraer Datos Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extraer Datos Quejas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Otros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8b0c9561-5fbb-4f10-aa63-8bd5d487ceaf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a4dc26936bc06a9a9b13517b72cdb59baa291c3cd7d40c8fe2614403cd7e27ae"
+  },
+  "id": "LYrJn04Uf0gb3unv",
+  "tags": []
+}
